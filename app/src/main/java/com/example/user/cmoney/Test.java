@@ -21,7 +21,7 @@ public class Test extends Activity {
         String idd = in.getExtras().getString("id");
         String pwdd = in.getExtras().getString("pwd");
 
-        id.setText("ID : "+ idd +"     " +pwdd);
+        id.setText("ID : "+ idd +"     Password : " +pwdd);
 
     }
 }
