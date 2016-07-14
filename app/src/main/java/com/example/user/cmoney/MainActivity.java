@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button login;
+        Button list;
 
         login = (Button)findViewById(R.id.lo);
         login.setOnClickListener(new View.OnClickListener() {
@@ -40,6 +41,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent bt1 = new Intent(MainActivity.this, Login.class);
                 startActivity(bt1);
+            }
+        });
+        list = (Button)findViewById(R.id.lol);
+        list.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                Intent bt2 = new Intent(MainActivity.this, List.class);
+                startActivity(bt2);
             }
         });
     }

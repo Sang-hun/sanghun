@@ -13,7 +13,6 @@ public class Test extends Activity {
         setContentView(R.layout.test);
 
         TextView id;
-        TextView pwd;
 
         id = (TextView)findViewById(R.id.id);
 

@@ -27,7 +27,8 @@
             android:id="@+id/dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/dialog"/>
+            android:src="@drawable/dialog"
+            android:background="@android:color/transparent"/>
     </LinearLayout>
 
     <LinearLayout
