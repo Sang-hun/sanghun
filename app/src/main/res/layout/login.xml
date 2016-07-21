@@ -43,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="   Username"
+            android:maxLength="50"
             android:layout_gravity="center"
             android:background="@drawable/editline">
             <requestFocus/>
@@ -74,6 +75,8 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="    ****"
+            android:maxLength="300"
+            android:inputType="textPassword"
             android:layout_gravity="center"
             android:background="@drawable/editline">
             </EditText>

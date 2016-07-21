@@ -29,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         Button login;
         Button list;
 

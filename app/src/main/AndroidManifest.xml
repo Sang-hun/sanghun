@@ -19,11 +19,15 @@
         </activity>
 
         <activity android:name=".Login"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
         <activity android:name=".Test"
             android:screenOrientation="portrait"/>
         <activity android:name=".List"
             android:screenOrientation="portrait"/>
+        <activity android:name=".Please"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
