@@ -6,22 +6,32 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
-public class Please extends AppCompatActivity {
+public class Please extends AppCompatActivity implements onNetworkResponseListener {
 
     EditText Use;
     EditText UseMoney;
     EditText UseDate;
+    Spinner sp;
+    AccountTitleSpinnerList spinnerList;
 
     static final int DATE_DIALOG_ID = 0;
 
@@ -37,8 +47,12 @@ public class Please extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.enableDefaults();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.please);
+
+
+        getAccountList();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
         toolbar.setTitle(R.string.please);
@@ -46,6 +60,7 @@ public class Please extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         ImageView Save;
 
@@ -67,8 +82,6 @@ public class Please extends AppCompatActivity {
                 String usemoney = UseMoney.getText().toString();
                 String usedate = UseDate.getText().toString();
 
-
-
                 try{
                     Integer.parseInt(usemoney);
                     if ("".equals(use)||"".equals(usemoney)||"".equals(usedate)){
@@ -79,19 +92,15 @@ public class Please extends AppCompatActivity {
 
                     Intent bt1 = new Intent(Please.this, List.class);
                     startActivity(bt1);
-
                 }
 
                 catch (Exception e){
                     Toast.makeText(getApplicationContext(), "사용금액을 적절하게 입력하세요.", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
     }
-
     private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener()
     {
         public void onDateSet(DatePicker view, int yearSelected,
@@ -122,5 +131,37 @@ public class Please extends AppCompatActivity {
         }
         return (super.onOptionsItemSelected(menuItem));
     }
+    //요청부분
+    public void getAccountList(){
+        JSONObject req_data = new JSONObject();
+        try {
+            req_data.put("USER_ID", "test_user1");
 
+            CommNetwork commNetwork = new CommNetwork(this, this);
+            commNetwork.requestToServer("ACCOUNT_L001",req_data);
+        } catch (Exception e) {
+            Error.AlertException(this, "오류발생", e);
+
+        }
+    }
+
+    public void onSuccess(String api_key, JSONObject response) {
+        Toast.makeText(this, "요청성공",Toast.LENGTH_SHORT).show();
+
+        try {
+            JSONArray array = response.getJSONArray("REC");
+             spinnerList = new AccountTitleSpinnerList(array);
+             ArrayAdapter<String> adapter = new ArrayAdapter<>(Please.this, android.R.layout.simple_spinner_item, spinnerList.getArrayList());
+             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+             sp = (Spinner) findViewById(R.id.spinner1);
+             sp.setAdapter(adapter);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onFailure(String api_key, String error_cd, String error_msg) {
+        Toast.makeText(this, "요청실패",Toast.LENGTH_SHORT).show();
+    }
 }

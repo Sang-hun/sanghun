@@ -28,6 +28,8 @@
         <activity android:name=".Please"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible"/>
+        <activity android:name=".Registor"
+            android:screenOrientation="portrait"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>

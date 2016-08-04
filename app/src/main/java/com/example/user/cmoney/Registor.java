@@ -1,85 +1,100 @@
 package com.example.user.cmoney;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
+public class Registor extends AppCompatActivity {
 
-
-public class Login extends Activity {
-    private Context CONTEXT;
-     EditText name;
-     EditText pwd;
+    EditText id,onepwd,twopwd;
+    Button check, Save;
+    TextView idworong,pwdwrong,pwdok;
+    String TrueorFalse;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.registor);
 
-        CONTEXT = this;
-        Button login;
-        Button registor;
+        id = (EditText)findViewById(R.id.newid);
+        onepwd = (EditText)findViewById(R.id.newpwd);
+        twopwd = (EditText)findViewById(R.id.onemorpwd);
+        idworong = (TextView)findViewById(R.id.noid);
+        pwdwrong = (TextView)findViewById(R.id.nomatch);
+        pwdok = (TextView)findViewById(R.id.okpwd);
 
-        name = (EditText)findViewById(R.id.name);
-        pwd = (EditText)findViewById(R.id.pwd);
-//        OnCreate 밖에 선언해야 인식이 가능하다(키보드 보이기)
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.showSoftInputFromInputMethod (name.getApplicationWindowToken(),InputMethodManager.SHOW_FORCED);
+        check = (Button)findViewById(R.id.idcheck);
+        check.setOnClickListener(new View.OnClickListener() {
 
-        login = (Button)findViewById(R.id.login);
-        login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                 String id = name.getText().toString();
-                 String password = pwd.getText().toString();
-
-//                if("".equals(id) || "".equals(password)){
-//                    Toast.makeText(getApplicationContext(), "아이디랑 비밀번호 확인하세요", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-
-                    Intent bt1 = new Intent(Login.this, List.class);
-                    bt1.putExtra("id",id);
-                    bt1.putExtra("pwd", password);
-                    startActivity(bt1);
-
-                if(id.equals("123") && password.equals("000")) {
-                    new httpTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "login_do_get.php?id="+id+"&pwd="+password, "");
+                if(id.getText().toString().equals("")){
+                    Toast.makeText(getApplicationContext(),"입력하셔야죠",Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    new httpTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "login_do_get.php?id="+id+"&pwd="+password, "");
+                else{
+                    new httpTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "check_id_get.php?id=" + id.getText().toString()," ");
                 }
             }
         });
 
-        registor = (Button)findViewById(R.id.registor);
-        registor.setOnClickListener(new View.OnClickListener() {
+        Save = (Button)findViewById(R.id.save);
+        Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("!!!","");
-                Intent bt2 = new Intent(CONTEXT, Registor.class);
-                startActivity(bt2);
 
+
+                if (id.getText().toString().equals("")||onepwd.getText().toString().equals("")||twopwd.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(),"입력하셔야죠",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent bt1 = new Intent(Registor.this, Login.class);
+                    startActivity(bt1);
+                }
             }
         });
 
+        twopwd.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+                if (onepwd.getText().toString().equals(twopwd.getText().toString())){
+                    pwdwrong.setText(new StringBuilder().append("비밀번호가 일치합니다."));
+                    pwdwrong.setTextColor(Color.BLUE);
+                    TrueorFalse = "true";
+                } else {
+                    pwdwrong.setText(new StringBuilder().append("비밀번호가 다릅니다."));
+                    pwdwrong.setTextColor(Color.RED);
+                    TrueorFalse = "false";
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
-
-
     private class httpTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... args) {
@@ -122,7 +137,6 @@ public class Login extends Activity {
 
                 br.close();
                 conn.disconnect();
-                br = null;
                 conn = null;
 
                 returnValue = sb.toString();
@@ -152,14 +166,24 @@ public class Login extends Activity {
             } else{
                 try {
                     if(result.equals("success")){
-                        String id = name.getText().toString();
-                        String password = pwd.getText().toString();
-                        Intent bt1 = new Intent(Login.this, Test.class);
-                        bt1.putExtra("id",id);
-                        bt1.putExtra("pwd", password);
-                        startActivity(bt1);
+
+                        idworong.setText(new StringBuilder().append("이미 등록된 아이디입니다."));
+                        idworong.setTextColor(Color.RED);
+                        TrueorFalse="false";
+//                        String id1 = id.getText().toString();
+//                        String password = onepwd.getText().toString();
+//                        Intent bt1 = new Intent(Registor.this, Login.class);
+//                        bt1.putExtra("id",id1);
+//                        bt1.putExtra("pwd", password);
+//                        startActivity(bt1);
                     }
-                    Toast.makeText(CONTEXT, result, Toast.LENGTH_SHORT).show();
+                    else {
+                        idworong.setText(new StringBuilder().append("가입 가능한 아이디 입니다."));
+                        idworong.setTextColor(Color.BLUE);
+                        TrueorFalse="true";
+
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -167,4 +191,3 @@ public class Login extends Activity {
         }
     }
 }
-
